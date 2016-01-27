@@ -1,0 +1,35 @@
+main() SimpleC{
+variable{
+int x;
+float y;
+bool w;
+int j;
+string teste;
+}
+w=true;
+
+teste="Henrique";
+
+print(teste);
+
+for(x;x<10;x=x+1){
+y=y+1;
+print(y);
+scan("int",y);
+}
+
+print(teste);
+scan("string",henrique);
+
+if(w==true){
+
+while(y==x){
+k="henrique";
+print(k);
+scan("int",x,"int",y);
+if(x != y){
+x=y;
+}
+}
+}
+}
