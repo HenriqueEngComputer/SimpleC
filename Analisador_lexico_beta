@@ -1,0 +1,1253 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#define TAM 30
+
+static int LINHA;
+static int COLUNA;
+static char TOKEN[TAM];
+static char LEXEMA[TAM];
+
+
+
+
+typedef struct Nod {
+								//Regisro dos Nó
+	int num_tabela;					// Local onde salva os Nó
+	char token[TAM];
+	char lexema[TAM];
+	int linha;
+	int coluna;
+	struct No *prox;			// Ponteiro que armazena o endereço do dado daquele nó
+}Nod;
+
+typedef struct ListaSiplesmenteLigada {
+	
+	Nod *inicio;					// Ponteiro que inicializa a fila pelo inicio
+	int tamanho;				// Informa o tamanho da fila para alocação dinamica
+}ListaSiplesmenteLigada;
+
+
+	
+void inicializa(ListaSiplesmenteLigada *lista);							//Operações do programa
+int inserirInicio(ListaSiplesmenteLigada *lista,int n_tabela,char tok[],char lex[],int line, int columm);
+int inserirFinal(ListaSiplesmenteLigada *lista,int n_tabela,char tok[],char lex[],int line, int columm);
+void imprimir(ListaSiplesmenteLigada *lista);
+int busca_posicao(ListaSiplesmenteLigada *lista,char tok[]);
+void inserir(ListaSiplesmenteLigada *lista,char tok[],char lex[],int line,int columm);
+
+void inicializa(ListaSiplesmenteLigada *lista){
+	lista->inicio = NULL;		//	ponteiro inicio recebe valor NULO
+	lista->tamanho = 0;			// Fila inicia com valor 0
+	return;
+}
+
+int busca_posicao(ListaSiplesmenteLigada *lista,char tok[]){
+	
+	
+		Nod *aux = lista->inicio;
+		
+		int cont=0;
+		int retorno;
+		retorno =-1;
+		
+		if(lista->tamanho==0)return 0;
+		
+		while(aux != NULL){
+				
+				
+			
+				
+				if(strcmp(tok,aux->token)==0){
+					
+					retorno=aux->num_tabela;
+		
+				}	
+				
+				aux=aux->prox;
+				cont++;
+			}
+		if(retorno!= -1)return retorno;
+		
+		else{
+			
+			aux=lista->inicio;
+			int k=0;
+			int maior;
+			maior=aux->num_tabela;
+			while(k!=(cont)){
+				if(aux->num_tabela > maior){
+					maior=aux->num_tabela;
+				}
+				aux=aux->prox;
+				k++;
+			}
+			return (maior+1);
+
+		}
+		
+}
+
+
+void inserir(ListaSiplesmenteLigada *lista,char tok[],char lex[],int line,int columm){
+	int retorno;
+	retorno =0;
+	
+	retorno=busca_posicao(lista,tok);
+	
+//	printf("\n|O retorno %d|",retorno);	
+
+	inserirFinal(lista,retorno,tok,lex,line,columm);
+	return;
+}
+int inserirInicio(ListaSiplesmenteLigada *lista, int n_tabela,char tok[],char lex[],int line, int columm){
+	
+	Nod *novoNo = (Nod*) malloc(sizeof(Nod));
+	if(novoNo ==NULL) 	return -1; 	// Nao tem memoria disponivel no sistema;
+	
+	novoNo->num_tabela=n_tabela;
+	novoNo->linha=line;
+	novoNo->coluna=columm;
+	
+	int i =0;
+   
+   while(i!=TAM){
+   	novoNo->token[i]=NULL;
+   	novoNo->lexema[i]=NULL;
+   	i++;
+   }
+    i=0;
+	
+	strcpy(novoNo->token,tok);
+	strcpy(novoNo->lexema,lex);
+	
+	
+	
+	
+	novoNo->prox = NULL;
+	
+	novoNo->prox = lista->inicio;
+	lista->inicio = novoNo;
+	lista->tamanho++;
+	return 1;
+	
+		
+		
+	
+}
+
+int inserirFinal(ListaSiplesmenteLigada *lista, int n_tabela,char tok[],char lex[],int line, int columm){
+	
+	if(lista->tamanho ==0){
+		return inserirInicio(lista, n_tabela,tok,lex,line,columm);
+	}
+	
+	Nod *novoNo = (Nod*) malloc(sizeof(Nod));
+	if(novoNo==NULL) return -1;
+	
+	
+	novoNo->num_tabela=n_tabela;
+	novoNo->linha=line;
+	novoNo->coluna=columm;
+	
+	int i =0;
+   
+   while(i!=TAM){
+   	novoNo->token[i]=NULL;
+   	novoNo->lexema[i]=NULL;
+   	i++;
+   }
+    i=0;
+	
+	strcpy(novoNo->token,tok);
+	strcpy(novoNo->lexema,lex);
+	
+	
+	
+	
+	
+	
+	novoNo->prox = NULL;
+	
+	Nod *aux = lista->inicio;
+	while(aux->prox !=NULL){
+		aux = aux->prox;
+	}
+	
+	aux->prox = novoNo;
+	lista->tamanho++;
+	return -1;
+}
+
+void imprimir(ListaSiplesmenteLigada *lista){
+	if (lista->tamanho==0)
+    {
+        printf("A lista esta vazia!");
+        return;
+    }
+    Nod *no = lista->inicio;
+    
+    printf("Numero na tabela \t Token \t     Lexema \tLinha \tColuna \n");
+    int i;
+    while (no != NULL)
+    {
+    	
+      	printf("%d \t\t\t",no->num_tabela);
+      	
+      	
+    i=0;
+   
+    while(no->token[i]!=NULL){
+
+    	printf("%c",no->token[i]);
+    	i++;
+	}
+	printf("\t");
+	i=0;
+	while(no->lexema[i]!=NULL){
+		
+		printf("%c",no->lexema[i]);
+		i++;
+	}
+	printf("\t");
+	
+	printf("%d \t",no->linha);
+	printf("%d \t",no->coluna);
+      	
+        no = no->prox;
+        
+        printf("\n");
+       
+        	
+    }
+     return;
+}
+
+
+
+
+enum boolean
+{
+    true = 1, false = 0
+};
+typedef enum boolean bool;
+ 
+ 
+typedef struct Node{
+    char info;
+    struct Node *proximo;
+}No;
+ 
+No *primeiro = NULL;
+ 
+void inserirPrimeiro(char valor);//Insere um nó na primeira posição
+ 
+void inserirUltimo(char valor);//Insere um nó na ultina posição
+ 
+void imprimir();//Imprime os valores de todos os nós
+ 
+void limpar();//Remove todos os nós da Lista
+
+int tamanho();//Retona o numeros de nós da Lista
+
+int tamanho()//Retona o numeros de nós da Lista
+{
+    int cont = 0;
+    No *no = primeiro;
+    while (no != NULL)
+    {
+        no = no->proximo;
+        cont++;
+    }
+    return cont;
+}
+
+void inserirPrimeiro(char valor)
+{
+    No *no = (No*) malloc (sizeof(No));
+    no->info = valor;
+    no->proximo = primeiro;
+    primeiro = no;
+}
+ 
+void imprimi(ListaSiplesmenteLigada *lista)//Imprime os valores de todos os nós
+{
+	
+	char palavra[TAM];
+	int acm=0;
+	int retorno;
+	
+    if (primeiro == NULL)
+    {
+       // printf("A lista esta vazia!");
+        return;
+    }
+    No *no = primeiro;
+    while (no != NULL)
+    {
+    	LEXEMA[acm]=no->info;
+      //  printf("%c", no->info);
+      
+        no = no->proximo;
+        acm++;
+    }
+   retorno= lexical(LEXEMA);
+   
+//  strcpy(LEXEMA,palavra);
+   if(retorno <0){
+   	printf("\n\n ERRO\n");
+   	printf("Linha %d\t ",LINHA);
+   	printf("Coluna %d\n",COLUNA);
+
+   	 limpar();
+   	return;
+   }
+ token_resultado(retorno);
+
+	inserir(lista,TOKEN,LEXEMA,LINHA,COLUNA);
+	
+	
+	
+	LINHA=NULL;
+	COLUNA=NULL;
+	int i;
+	i=0;
+	while(i!=TAM){
+		TOKEN[i]=NULL;
+		LEXEMA[i]=NULL;
+		i++;
+	}
+	i=0;
+
+    limpar();
+}
+
+void token_resultado(int retorno){
+	
+	char resposta[TAM];
+	
+	switch(retorno){		
+		case 1: strcpy(resposta,"PRINT");
+	
+		break;
+		case 2: strcpy(resposta,"SCAN");
+		break;
+		case 3: strcpy(resposta,"VAR");
+		break;
+		case 4: strcpy(resposta,"IF");
+		break;
+		case 5: strcpy(resposta,"WHILE");
+		break;
+		case 6: strcpy(resposta,"FOR");
+		break;
+		case 7: strcpy(resposta,"INTEGER");
+		break;
+		case 8: strcpy(resposta,"REAL");
+		break;
+		case 9: strcpy(resposta,"BOOLEAN");
+		break;
+		case 10: strcpy(resposta,"TEXT");
+		break;
+		case 11: strcpy(resposta,"TRUE");
+		break;
+		case 12: strcpy(resposta,"FALSE");
+		break;
+		case 13: strcpy(resposta,"MAIN");
+		break;
+		case 14: strcpy(resposta,"PLUS");
+		break;
+		case 15: strcpy(resposta,"MINUS");
+		break;
+		case 16: strcpy(resposta,"MULT");
+		break;
+		case 17: strcpy(resposta,"DIV");
+		break;
+		case 18: strcpy(resposta,"LPARENT");
+		break;
+		case 19: strcpy(resposta,"RPARENT");
+		break;
+		case 20: strcpy(resposta,"FINISHED");
+		break;
+		case 21: strcpy(resposta,"ATRIB");
+		break;
+		case 22: strcpy(resposta,"EQUAL");
+		break;
+		case 23: strcpy(resposta,"ENDLINE");
+		break;
+		case 24: strcpy(resposta,"BEGIN");
+		break;
+		case 25: strcpy(resposta,"AND");
+		break;
+		case 26: strcpy(resposta,"OR");
+		break;
+		case 27: strcpy(resposta,"MORE");
+		break;
+		case 28: strcpy(resposta,"FEWER");
+		break;
+		case 29: strcpy(resposta,"MORE_IQUAL");
+		break;
+		case 30: strcpy(resposta,"FEWER_IQUAL");
+		break;
+		case 31: strcpy(resposta,"DIFFERENCE");
+		break;
+		case 32: strcpy(resposta,"SEPARATOR");
+		break;
+		case 33: strcpy(resposta,"FLOAT");
+		break;
+		case 34: strcpy(resposta,"INT");
+		break;
+		case 35: strcpy(resposta,"ID");
+		break;
+		case 36: strcpy(resposta,"STRING");
+		break;
+	}
+	
+	strcpy(TOKEN,resposta);
+}
+ 
+void limpar()//Remove todos os nós da Lista
+{
+    No *no = primeiro, *aux;
+    while (no != NULL)
+    {
+        aux = no;
+        no = no->proximo;
+        free (aux);
+    }
+    primeiro = NULL;
+}
+
+void inserirUltimo(char valor)//Insere um nó na ultina posição
+{
+    if (primeiro == NULL)
+    {
+        inserirPrimeiro(valor);
+        return;
+    }
+    No *no = primeiro, *novo;
+    while (no->proximo != NULL)
+    {
+        no = no->proximo;
+    }
+    novo = (No*) malloc (sizeof(No));
+    novo->info = valor;
+    novo->proximo = NULL;
+    no->proximo = novo;
+}
+
+
+enum token{
+	PRINT =1,SCAN,VAR,IF,WHILE,FOR,INTEGER,REAL,BOOLEAN,TEXT,TRUE,FALSE,MAIN,PLUS,MINUS,MULT,DIV,LPARENT,RPARENT,FINISHED,ATRIB,EQUAL,ENDLINE,BEGIN,AND,OR,MORE,FEWER,MORE_IQUAL,FEWER_IQUAL,DIFFERENCE,SEPARATOR,FLOAT,INT,ID,STRING
+};
+
+
+
+int token_t(char palavra[],int passo){
+	
+		if(palavra[passo]=='r'&& passo ==1){
+		return token_r(palavra,passo+1);
+	}
+
+	if(palavra[passo]=='r'&& passo ==2){
+		return token_r(palavra,passo+1);
+	}
+	if(palavra[passo]== NULL && passo ==3){
+		return 7;
+	}
+	if(palavra[passo]!= NULL && passo ==3){
+		return 0;
+	}
+	
+	if(palavra[passo] == NULL && passo == 5){
+		
+		if(palavra[0]=='p')return 1;
+		if(palavra[0]=='f')return 8;
+	}
+	
+
+	if(isalpha(palavra[passo])== 0 && passo == 5 && palavra[0]=='p'){
+		return 1;
+	
+	}else{
+		return 0;
+	}
+
+}
+
+int token_n(char palavra[],int passo){
+	
+	if(palavra[passo]=='g'&& passo==5){
+		return token_g(palavra,passo+1);
+	}
+
+	if(palavra[passo] == 't' && passo ==4){
+
+		return token_t(palavra,passo+1);
+	}
+	if(palavra[passo] == 't' && passo ==2){
+
+		return token_t(palavra,passo+1);
+	}
+	if(palavra[passo]== NULL && passo ==4){
+		if(palavra[0]=='s')return 2;
+		if(palavra[0]=='m')return 13;
+	}
+		if(isalpha(palavra[passo])== 0 && passo ==4){
+			if(palavra[0]=='s')return 2;
+		if(palavra[0]=='m')return 13;
+	}else{
+		return 0;
+	}
+	
+	
+}
+
+int token_i(char palavra[],int passo){
+	
+	if(palavra[passo]=='n'&& passo ==4){
+		return token_n(palavra,passo+1);
+	}
+	if(palavra[passo] == 'n' && passo == 3){
+	
+	return 	token_n(palavra,passo+1);
+		
+	}
+	if(palavra[passo]=='n'&& passo ==1){
+		return token_n(palavra,passo+1);
+	}
+		if(palavra[passo] == 'a' && passo == 4){
+	
+	return 	token_a(palavra,passo+1);
+		
+	}
+	if(palavra[passo]=='f' && passo ==1){
+		return token_f(palavra,passo+1);
+	}
+	if(palavra[passo]=='l'&& passo ==3){
+		
+		return token_l(palavra,passo+1);
+	}else{return 0;
+	}
+
+}
+
+int token_r(char palavra[],int passo){
+	
+	if(palavra[passo]=='u' && passo ==2){
+		return token_u(palavra,passo+1);
+	}
+	
+	if(palavra[passo]=='i' && passo ==2){
+	
+	return 	token_i(palavra,passo+1);
+	}
+	if(palavra[passo]=='i' && passo ==3){
+
+	return 	token_i(palavra,passo+1);
+	}
+	if(palavra[passo]==NULL && passo == 3){
+		return 6;
+	}
+	if(isalpha(palavra[passo])== 0 && passo == 3){
+		return 6;
+	}else{
+		return 0;
+	}
+	
+}
+
+int token_p(char palavra[],int passo){
+	
+	if(palavra[passo] == 'r' && passo == 1){
+	
+	return 	token_r(palavra,passo+1);
+	}else{return 0;
+	}
+	
+}
+
+
+int token_s(char palavra[],int passo){
+	
+	if(palavra[passo]=='e'&& passo ==4){
+		return token_e(palavra,passo+1);
+	}
+	
+	if(palavra[passo]=='c'&& passo == 1){
+		return token_c(palavra,passo+1);
+	}
+	if(palavra[passo]=='t'&& passo ==1){
+		return token_t(palavra,passo+1);
+	}else{
+		return 0;
+	}
+}
+
+int token_c(char palavra[],int passo){
+		if(palavra[passo]=='a' && passo ==2){
+		return token_a(palavra,passo+1);
+	}else{return 0;
+	}
+}
+
+int token_a(char palavra[],int passo){
+	
+		if(palavra[passo]=='l' && passo ==2){
+			return token_l(palavra,passo+1);
+		}
+		if(palavra[passo]=='t'&& passo ==4){
+			return token_t(palavra,passo+1);
+		}
+		if(palavra[passo]=='n' && passo == 3){
+		return token_n(palavra,passo+1);
+		}
+		if(palavra[passo]=='i' && passo ==2){
+		return	token_i(palavra,passo+1);
+		}
+		if(palavra[passo]=='r' && passo ==2){
+		
+		return	token_r(palavra,passo+1);
+		}
+		if(palavra[passo]=='b' && passo ==5){
+	
+		return	token_b(palavra,passo+1);
+		}else{
+			return 0;
+		}
+}
+
+int token_m(char palavra[],int passo){
+		if(palavra[passo]=='a' && passo ==1){
+			return token_a(palavra,passo+1);
+		}else{
+			return 0;
+		}
+	}
+int token_v(char palavra[],int passo){
+	if(palavra[passo]=='a' && passo ==1){
+		return token_a(palavra,passo+1);
+	}else{
+		return 0;
+	}
+}
+
+int token_b(char palavra[],int passo){
+	
+	if(palavra[passo]=='l'&& passo ==6){
+		return token_l(palavra,passo+1);
+	}
+	if(palavra[passo]=='o'&& passo ==1){
+		return token_o(palavra,passo+1);
+	}else{
+		return 0;
+	}
+}
+
+int token_l(char palavra[],int passo){
+	if(palavra[passo]=='s' && passo ==3){
+		return token_s(palavra,passo+1);
+	}
+	
+	if(palavra[passo]== NULL && passo ==4){
+		return 9;
+	}
+	if(palavra[passo]!= NULL && passo ==4){
+		return 0;
+	}
+	if(palavra[passo]=='o'&& passo ==2){
+		return token_o(palavra,passo+1);
+	}
+	
+	if(palavra[passo]=='e' && passo == 7){
+		return token_e(palavra,passo+1);
+	}
+	if(palavra[passo]=='e' && passo ==4){
+			
+		return token_e(palavra,passo+1);
+	}else{
+		return 0;
+	}
+}
+
+int token_e(char palavra[],int passo){
+	
+
+	if(palavra[passo]==NULL && passo ==4){
+		return 11;
+
+	}
+	
+	if(palavra[passo]== NULL && passo ==5){
+		if(palavra[0]=='w')return 5;
+		if(palavra[0]=='f')return 12;
+	}
+	if(isalpha(palavra[passo])== 0&& passo==5 && palavra[0]=='w'){
+		return 5;
+	}
+	
+	if(palavra[passo] == NULL && passo == 8){
+		return 3;
+	}
+	if(passo ==8){
+		return 3;
+	}else{
+		return 0;
+	}
+}
+
+int token_f(char palavra[],int passo){
+	
+	if(palavra[passo]=='a'&& passo ==1){
+		return token_a(palavra,passo+1);
+	}
+	if(palavra[passo]=='l'&& passo ==1){
+		return token_l(palavra,passo+1);
+	}
+	if(palavra[passo]=='o' && passo ==1){
+		return token_o(palavra,passo+1);
+	}
+	if(palavra[passo]==NULL && passo ==2){
+		return 4;
+	}
+	if(isalpha(palavra[passo])== 0 && passo ==2){
+		return 4;
+	}else{
+		return 0;
+	}
+}
+
+int token_o(char palavra[],int passo){
+	if(palavra[passo]=='a' && passo ==3){
+		return token_a(palavra,passo+1);
+	}
+	if(palavra[passo]=='r'&& passo ==2){
+		return token_r(palavra,passo+1);
+	}
+	if(palavra[passo] =='o'&& passo ==2){
+		return token_o(palavra,passo+1);
+	}
+	if(palavra[passo]=='l' && passo == 3){
+		return token_l(palavra,passo+1);
+	}else{
+		return 0;
+	}
+}
+
+int token_w(char palavra[],int passo){
+	if(palavra[passo]=='h'&& passo==1){
+	
+		return token_h(palavra,passo+1);
+	}else{
+		return 0;
+	}
+}
+int token_h(char palavra[],int passo){
+	if(palavra[passo]=='i'&& passo ==2){
+		
+		return token_i(palavra,passo+1);
+	}else{
+		return 0;
+	}
+}
+int token_g(char palavra[],int passo){
+	if(palavra[passo]== NULL && passo ==6){
+		return 10;
+		
+	}
+		if(palavra[passo]!= NULL && passo ==6){
+		return 0;
+		
+	}else{return 0;
+	}
+}
+
+int token_u(char palavra[],int passo){
+	if(palavra[passo]=='e' && passo ==3){
+		return token_e(palavra,passo+1);
+	}else{
+		return 0;
+	}
+}
+
+int token_real(char palavra[],int passo){
+		if(isdigit(palavra[passo])!=0) return token_real(palavra,passo+1);
+		if(isdigit(palavra[passo])==0 && strlen(palavra) == passo) return 33;
+		else{
+			return -1;
+		}
+		
+}
+int token_number(char palavra[],int passo){
+	if(isdigit(palavra[passo])!=0) return token_number(palavra,passo+1);
+	if(palavra[passo]=='.'&& palavra[passo+1]== NULL)return -1;
+	if(palavra[passo]=='.'&& isdigit(palavra[passo+1])!=0)return token_real(palavra,passo+1);
+	if(palavra[passo]==NULL){
+		return 34;
+	}else{
+		return 0;
+	}
+	
+	
+}
+
+int token_string(char palavra[],int passo){
+	if(palavra[passo]!='"')return token_string(palavra,passo+1);
+	if(palavra[passo]== '"')return 36;
+	else{
+		return -1;
+	}
+}
+int estado_inicial(char palavra[]){
+	
+//	printf("estou aqui");
+
+	int passo;
+
+	
+	passo =0;
+	
+	if(palavra[0] == 'p'){
+		
+	
+	return 	token_p(palavra,passo+1);
+		
+	}
+	if(palavra[0] =='s'){
+
+		return token_s(palavra,passo+1);
+	}
+
+	if(palavra[0]=='m'){
+		return token_m(palavra,passo+1);
+	}
+	if(palavra[0]=='v'){
+		return token_v(palavra,passo+1);
+	}
+	if(palavra[0]=='i'){
+		return token_i(palavra,passo+1);
+	}
+	if(palavra[0]=='w'){
+		return token_w(palavra,passo+1);
+	}
+	if(palavra[0]=='f'){
+		return token_f(palavra,passo+1);
+	}
+	if(palavra[0]=='b'){
+		return token_b(palavra,passo+1);
+	}
+	if(palavra[0]=='t'){
+		return token_t(palavra,passo+1);
+	}
+	if(palavra[0]=='+'){
+		return 14;
+	}
+	if(palavra[0]=='-'){
+		return 15;
+	}
+	if(palavra[0]=='*'){
+		return 16;
+	}
+	if(palavra[0]=='/'){
+		return 17;
+	}
+	if(palavra[0]=='('){
+	
+		return 18;
+	}
+	if(palavra[0]==')'){
+		return 19;
+	}
+	if(palavra[0]=='}'){
+		return 20;
+	}
+	if(palavra[0]=='='){
+		
+		if(palavra[1]== NULL)return 21;
+		if(palavra[1]== '='){
+			return 22;	
+		}else{
+			return 0;
+		}
+	
+	}
+	if(palavra[0]==';'){
+		return 23;
+	}
+	if(palavra[0]=='{'){
+		return 24;
+	}
+	if(palavra[0]=='&'){
+		if(palavra[1]== NULL)return 0;
+		if(palavra[1]== '&'){
+			return 25;	
+		}else{
+			return 0;
+		}
+	}
+	if(palavra[0]=='|'){
+		if(palavra[1]== NULL)return 0;
+		if(palavra[1]== '|'){
+			return 26;	
+		}else{
+			return 0;
+		}
+	}
+	if(palavra[0]=='>'){
+		if(palavra[1]== NULL)return 27;
+		if(palavra[1]=='=')return 29;
+		else{
+			return 0;
+		}
+	}
+	if(palavra[0]=='<'){
+		if(palavra[1]==NULL)return 28;
+		if(palavra[1]=='=')return 30;
+	}
+	if(palavra[0]=='!'){
+		if(palavra[1]=='=')return 31;
+		else{
+			return 0;
+		}
+	}
+	if(palavra[0]==','){
+		return 32;
+	}
+	if(isdigit(palavra[0])!=0){
+	return	token_number(palavra,passo+1);
+	}
+	if(palavra[0]=='"'){
+	return	token_string(palavra,passo+1);
+	}else{
+		return 0;
+	}
+	
+	
+}
+
+int isID(char palavra[]){
+	
+	if(isalpha(palavra[0])!=0){
+		return validation(palavra,1);
+	}else{
+		return -1;
+	}
+}
+
+int validation(char palavra[],int passo){
+	
+
+	if(isalpha(palavra[passo])!=0){
+		
+		return validation(palavra,passo+1);
+	}
+	if(isdigit(palavra[passo])!=0){
+	
+		return validation(palavra,passo+1);
+	} 
+	
+	if(isdigit(palavra[passo])==0 && isalpha(palavra[passo])!=0 ){
+			return -2;
+	}
+			return 35;
+
+}
+
+
+int lexical(char palavra[]){
+	
+		int retorno;
+		int i=0;
+		
+		retorno =estado_inicial(palavra);
+
+
+			
+	if(retorno == 0){
+		retorno=isID(palavra);
+		//printf("\n O Retorno -> %d \n",retorno);
+	}
+
+	return retorno;
+	
+}
+
+
+void get_token(FILE *arq,ListaSiplesmenteLigada *lista){
+	
+		
+	
+	char ch;
+	
+	int swap;
+	int caracter;
+	int linha;
+	
+	int especial;
+	especial =-1;
+	
+	int string;
+	string =0;
+	
+	char bloco[2];
+	
+	bloco[0]=NULL;
+	bloco[1]=NULL;
+	
+	int i =0;
+	
+	
+	caracter =0;
+	linha =1;
+	
+ 	swap =1;
+	
+	
+	//	printf("Coluna \t Linha \t Lexema  Token \n");
+	
+	    while((ch=fgetc(arq))!= EOF ){
+	    	
+	    	
+				caracter++;
+				
+					if(string==2){
+						if(ch=='\n' || ch == NULL){
+							printf("\n ERRO STRING \n");
+							printf(" Linha %d \t",linha);
+							printf(" Coluna %d \n",caracter);
+							return;
+						}
+					}
+		
+	    	
+	    	if(ch=='\n'){
+	    	linha++;
+	    	caracter=0;	
+			}
+			
+				if(ch <0 ||ch==36 || ch==37||ch==35||ch==64||ch==39||ch==58||ch==63||ch==93||ch==92||ch==91||ch==94||ch==96|| ch==126){
+				printf("ERRO");
+				printf(" Linha %d \t",linha);
+				printf(" Coluna %d\n",caracter);
+				return;
+			}
+			
+				if(ch=='"'&& string ==2){
+					inserirUltimo(ch);
+					string =3;
+					imprimi(lista);
+				//	printf("\n");
+				}
+				
+					if(string ==2){
+						inserirUltimo(ch);
+				}
+			
+				if(ch=='"'&& string ==0){
+					
+						if(tamanho()>0){
+									imprimi(lista);
+						//				printf("\n");
+								}
+								
+					string=2;
+					//	printf(" %d \t",caracter);
+						COLUNA=caracter;
+						LINHA=linha;
+					//	printf(" %d \t",linha);
+						
+						inserirUltimo(ch);
+					
+				}
+				if(string ==3){
+					string =0;
+				}
+			
+			
+			
+				
+			
+				if(ch=='!'||ch=='&'||ch=='='||ch=='>'||ch=='<'||ch=='|'){
+					
+					if(string ==0){
+					
+					
+						if(tamanho()>0 && especial ==-1){
+									imprimi(lista);
+								//		printf("\n");
+								}
+						inserirUltimo(ch);
+				
+					if(especial ==1){
+						
+						
+							imprimi(lista);
+							//	printf("\n");
+								especial =0;
+					}
+					
+					
+						if(especial == -1){
+
+							//	printf(" %d \t",caracter);
+						//		printf(" %d \t",linha);
+									COLUNA=caracter;
+									LINHA=linha;
+								especial=1;
+						}
+					if(especial==0)especial =-1;
+						
+						}
+				}
+
+		
+			if(isalpha(ch)!= 0 || isdigit(ch)!=0||ch=='.'||ch=='_'){
+				
+				if(string ==0){
+					
+					if(especial ==1){
+										imprimi(lista);
+									//	printf("\n");
+										especial=-1;
+					}
+					
+			
+				
+				inserirUltimo(ch);
+			
+				if(swap == 1){
+					int k=0;
+			
+				//	printf(" %d \t",caracter);
+				//	printf(" %d \t",linha);
+						COLUNA=caracter;
+						LINHA=linha;
+				
+
+			
+					swap=0;
+					}
+			
+				}
+			
+			}
+			
+			
+			else{
+		
+		
+					if(string==2){
+						if(ch=='\n' || ch == NULL){
+							printf("\n ERRO STRING \n");
+							printf(" Linha %d \t",linha);
+							printf(" Coluna %d \n",caracter);
+							return;
+						}
+					}
+					//------------------------------------------------------------
+					// mexi aqui!
+					if(ch ==' ' || ch =='\n' || ch == NULL){
+						if(string ==0){
+					
+								imprimi(lista);
+								   	
+
+   	
+							//	printf("\n");
+						}//if(string==2){
+					
+						
+							
+							
+								//imprimi(lista);
+							//	printf("\n");
+					//	}
+					
+					}
+					if(ch =='+'||ch=='-'||ch=='/'||ch=='*'|| ch=='{'||ch=='}'||ch=='('||ch==')'||ch==';'||ch==','){
+						if(string ==0){
+					
+						
+								if(tamanho()>0){
+									imprimi(lista);
+									//	printf("\n");
+								}
+								inserirUltimo(ch);
+									COLUNA=caracter;
+									LINHA=linha;
+							//	printf(" %d \t",caracter);
+							//	printf(" %d \t",linha);
+								imprimi(lista);
+							//	printf("\n");
+									}
+					}
+				
+				
+					swap=1;
+			}
+			
+
+				}
+				if(ch==EOF){
+					if(string ==0){
+						imprimi(lista);
+					}
+					if(string==2){
+							//printf("\n ERRO");
+							
+							printf("\n ERRO STRING \n");
+							printf(" Linha %d \t",linha);
+							printf(" Coluna %d \n",caracter);
+							return;
+								imprimi(lista);
+							//	printf("\n");
+						}
+						
+						
+						
+				}
+				
+//	fclose(arq);
+	
+	
+}
+
+
+
+
+
+
+int main(int argc,char *argv[]){
+
+		ListaSiplesmenteLigada lista;
+		inicializa(&lista);
+		
+		int k;
+		k=0;
+		
+		while(k!=TAM){
+			TOKEN[k]=NULL;
+			LEXEMA[k]=NULL;
+			k++;
+		}
+		k=0;
+			
+
+	char ch;
+	FILE *arq;
+	
+	
+	if((arq=fopen(argv[1],"r"))== NULL){
+		printf("\n O arquivo nao pode ser aberto \n");
+		exit(1);
+	}
+	
+	
+
+	get_token(arq,&lista);
+	
+	fclose(arq);
+	
+	
+	imprimir(&lista);
+//	terminais(fp);
+}
